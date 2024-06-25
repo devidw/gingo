@@ -1,3 +1,3 @@
 # gingo
 
-a 0-dep runpod orchestrator
+a runpod orchestrator

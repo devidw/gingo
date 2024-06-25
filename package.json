@@ -11,5 +11,8 @@
         "ts-node": "^10.9.1",
         "typescript": "^5.0.4",
         "unique-names-generator": "^4.7.1"
+    },
+    "dependencies": {
+        "zod": "^3.23.8"
     }
 }

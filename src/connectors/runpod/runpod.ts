@@ -64,15 +64,6 @@ export class RunPodConnector implements IConnector {
                 imageName: string
                 containerDiskInGb: number
                 volumeInGb: number
-                runtime: {
-                    uptimeInSeconds: number
-                    ports: {
-                        ip: string
-                        isIpPublic: boolean
-                        publicPort: number
-                        type: "http" | "tcp"
-                    }[]
-                }
             }
         }>(`
                  query someQuery {
@@ -80,33 +71,14 @@ export class RunPodConnector implements IConnector {
                         input: {
                             podId: "${podId}"
                         }
-                        )
-                            {
-                            id
-                            desiredStatus
-                            name
-                            imageName
-                            containerDiskInGb
-                            volumeInGb
-                            runtime {
-                                uptimeInSeconds
-                                ports {
-                                    ip
-                                    isIpPublic
-                                    privatePort
-                                    publicPort
-                                    type
-                                }
-                                gpus {
-                                    id
-                                    gpuUtilPercent
-                                    memoryUtilPercent
-                                } container {
-                                    cpuPercent
-                                    memoryPercent
-                                }
-                            }
-                        }
+                    ) {
+                        id
+                        desiredStatus
+                        name
+                        imageName
+                        containerDiskInGb
+                        volumeInGb
+                    }
                     }`)
     }
 

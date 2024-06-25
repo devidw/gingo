@@ -1,28 +1,43 @@
-export type GlobalConfig = {
-    // fallbackWaitAfterRemoveNoticeMin: number
-}
+import { z } from "zod"
 
-export type ClusterConfig = {
-    id: string
-    targetPodCount: number
-    checkIntervalMin: number
-    checkTimeoutS: number
-    healthyCheckCount: number
-    unhealthyCheckCount: number
-    restartCountToDrop: number
-    connectorAdd?: Record<string, unknown>
-
+export type CallbacksConfig = {
     // callbacks
-    checkPodHealth: (podId: string) => Promise<boolean>
-    onPodListUpdate?: (podIds: string[]) => Promise<void>
-    afterPodStart?: (podId: string) => Promise<void>
-    afterPodRestart?: (podId: string) => Promise<void>
+    checkPodHealth: (data: {
+        clusterConfig: ClusterConfig
+        podId: string
+    }) => Promise<boolean>
+
+    onPodListUpdate?: (data: {
+        clusterConfig: ClusterConfig
+        podIds: string[]
+    }) => Promise<void>
+
+    afterPodStart?: (data: {
+        clusterConfig: ClusterConfig
+        podId: string
+    }) => Promise<void>
+
+    afterPodRestart?: (data: {
+        clusterConfig: ClusterConfig
+        podId: string
+    }) => Promise<void>
 }
 
-export type Config = {
-    global: GlobalConfig
-    clusters: ClusterConfig[]
-}
+export const clusterconfigSchema = z.object({
+    id: z.string(),
+    enabled: z.boolean(),
+    targetPodCount: z.number(),
+    checkIntervalMin: z.number(),
+    checkTimeoutS: z.number(),
+    healthyCheckCount: z.number(),
+    unhealthyCheckCount: z.number(),
+    restartCountToDrop: z.number(),
+    startTimeoutMin: z.number(),
+    restartTimeoutMin: z.number(),
+    connectorAdd: z.record(z.unknown()).optional(),
+})
+
+export type ClusterConfig = z.output<typeof clusterconfigSchema>
 
 export type PodStatus =
     | "healthy"
@@ -50,7 +65,42 @@ export class Pod {
     restartCount = 0
     extra: Record<string, unknown> = {}
 
+    lastStart: number | null = null
+    lastRestart: number | null = null
+    lastHealthy: number | null = null
+    lastCheck: string | null = null
+
     constructor(id: string) {
         this.id = id
+    }
+
+    start() {
+        this.status = "starting"
+        this.lastStart = Date.now()
+    }
+
+    restart() {
+        this.restartCount++
+        this.healthyCheckCount = 0
+        this.unhealthyCheckCount = 0
+        this.status = "restarting"
+        this.lastRestart = Date.now()
+        this.lastHealthy = null
+    }
+
+    get isStarting() {
+        return (
+            this.lastStart !== null &&
+            this.restartCount === 0 &&
+            this.lastHealthy === null
+        )
+    }
+
+    get isRestarting() {
+        return (
+            this.lastRestart !== null &&
+            this.restartCount > 0 &&
+            (this.lastHealthy === null || this.lastHealthy < this.lastRestart)
+        )
     }
 }

@@ -1,0 +1,602 @@
+{
+    "data": {
+        "countryCodes": [
+            "AR",
+            "AT",
+            "BE",
+            "BG",
+            "CA",
+            "CZ",
+            "ES",
+            "FR",
+            "GB",
+            "IL",
+            "IS",
+            "NL",
+            "PT",
+            "SE",
+            "SK",
+            "TT",
+            "US",
+            "ZA"
+        ],
+        "dataCenters": [
+            {
+                "id": "CA-MTL-1",
+                "name": "CA-MTL-1",
+                "listed": true,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "CA-MTL-2",
+                "name": "CA-MTL-2",
+                "listed": true,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "CA-MTL-3",
+                "name": "CA-MTL-3",
+                "listed": true,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "EU-CZ-1",
+                "name": "EU-CZ-1",
+                "listed": false,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "EU-NL-1",
+                "name": "EU-NL-1",
+                "listed": true,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "EU-RO-1",
+                "name": "EU-RO-1",
+                "listed": true,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "EU-SE-1",
+                "name": "EU-SE-1",
+                "listed": false,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "EU-SE-2",
+                "name": "EU-SE-2",
+                "listed": false,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "EUR-IS-1",
+                "name": "EUR-IS-1",
+                "listed": true,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "EUR-IS-2",
+                "name": "EUR-IS-2",
+                "listed": true,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "EUR-NO-1",
+                "name": "EUR-NO-1",
+                "listed": false,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "SEA-SG-1",
+                "name": "SEA-SG-1",
+                "listed": true,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "US-CA-1",
+                "name": "US-CA-1",
+                "listed": true,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "US-GA-1",
+                "name": "US-GA-1",
+                "listed": true,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "US-KS-1",
+                "name": "US-KS-1",
+                "listed": false,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "US-KS-2",
+                "name": "US-KS-2",
+                "listed": true,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "US-KS-3",
+                "name": "US-KS-3",
+                "listed": false,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "US-OR-1",
+                "name": "US-OR-1",
+                "listed": true,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "US-OR-2",
+                "name": "US-OR-2",
+                "listed": false,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "US-TX-1",
+                "name": "US-TX-1",
+                "listed": false,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "US-TX-2",
+                "name": "US-TX-2",
+                "listed": false,
+                "__typename": "DataCenter"
+            },
+            {
+                "id": "US-TX-3",
+                "name": "US-TX-3",
+                "listed": true,
+                "__typename": "DataCenter"
+            }
+        ],
+        "gpuTypes": [
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 1,
+                "maxGpuCountSecureCloud": 8,
+                "minPodGpuCount": 1,
+                "id": "AMD Instinct MI300X OAM",
+                "displayName": "MI300X",
+                "memoryInGb": 192,
+                "secureCloud": true,
+                "communityCloud": false,
+                "manufacturer": "AMD",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 8,
+                "maxGpuCountSecureCloud": 8,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA A100 80GB PCIe",
+                "displayName": "A100 PCIe",
+                "memoryInGb": 80,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 1,
+                "maxGpuCountSecureCloud": 8,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA A100-SXM4-80GB",
+                "displayName": "A100 SXM",
+                "memoryInGb": 80,
+                "secureCloud": true,
+                "communityCloud": false,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 4,
+                "maxGpuCountCommunityCloud": 4,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA A30",
+                "displayName": "A30",
+                "memoryInGb": 24,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 10,
+                "maxGpuCountCommunityCloud": 10,
+                "maxGpuCountSecureCloud": 10,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA A40",
+                "displayName": "A40",
+                "memoryInGb": 48,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 8,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA GeForce RTX 3070",
+                "displayName": "RTX 3070",
+                "memoryInGb": 8,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 8,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA GeForce RTX 3080",
+                "displayName": "RTX 3080",
+                "memoryInGb": 10,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 4,
+                "maxGpuCountCommunityCloud": 4,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA GeForce RTX 3080 Ti",
+                "displayName": "RTX 3080 Ti",
+                "memoryInGb": 12,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 10,
+                "maxGpuCountCommunityCloud": 10,
+                "maxGpuCountSecureCloud": 8,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA GeForce RTX 3090",
+                "displayName": "RTX 3090",
+                "memoryInGb": 24,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 2,
+                "maxGpuCountCommunityCloud": 2,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA GeForce RTX 3090 Ti",
+                "displayName": "RTX 3090 Ti",
+                "memoryInGb": 24,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 6,
+                "maxGpuCountCommunityCloud": 6,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA GeForce RTX 4070 Ti",
+                "displayName": "RTX 4070 Ti",
+                "memoryInGb": 12,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 4,
+                "maxGpuCountCommunityCloud": 4,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA GeForce RTX 4080",
+                "displayName": "RTX 4080",
+                "memoryInGb": 16,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 12,
+                "maxGpuCountCommunityCloud": 12,
+                "maxGpuCountSecureCloud": 8,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA GeForce RTX 4090",
+                "displayName": "RTX 4090",
+                "memoryInGb": 24,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 1,
+                "maxGpuCountSecureCloud": 8,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA H100 80GB HBM3",
+                "displayName": "H100 SXM",
+                "memoryInGb": 80,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 8,
+                "maxGpuCountSecureCloud": 8,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA H100 NVL",
+                "displayName": "H100 NVL",
+                "memoryInGb": 94,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 1,
+                "maxGpuCountSecureCloud": 8,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA H100 PCIe",
+                "displayName": "H100 PCIe",
+                "memoryInGb": 80,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 1,
+                "maxGpuCountSecureCloud": 8,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA L4",
+                "displayName": "L4",
+                "memoryInGb": 24,
+                "secureCloud": true,
+                "communityCloud": false,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 1,
+                "maxGpuCountSecureCloud": 8,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA L40",
+                "displayName": "L40",
+                "memoryInGb": 48,
+                "secureCloud": true,
+                "communityCloud": false,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 8,
+                "maxGpuCountSecureCloud": 8,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA L40S",
+                "displayName": "L40S",
+                "memoryInGb": 48,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 1,
+                "maxGpuCountSecureCloud": 8,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA RTX 2000 Ada Generation",
+                "displayName": "RTX 2000 Ada",
+                "memoryInGb": 16,
+                "secureCloud": true,
+                "communityCloud": false,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 8,
+                "maxGpuCountSecureCloud": 5,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA RTX 4000 Ada Generation",
+                "displayName": "RTX 4000 Ada",
+                "memoryInGb": 20,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 8,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA RTX 4000 SFF Ada Generation",
+                "displayName": "RTX 4000 Ada SFF",
+                "memoryInGb": 20,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 8,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA RTX 5000 Ada Generation",
+                "displayName": "RTX 5000 Ada",
+                "memoryInGb": 32,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 8,
+                "maxGpuCountSecureCloud": 8,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA RTX 6000 Ada Generation",
+                "displayName": "RTX 6000 Ada",
+                "memoryInGb": 48,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 7,
+                "maxGpuCountCommunityCloud": 7,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA RTX A2000",
+                "displayName": "RTX A2000",
+                "memoryInGb": 6,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 12,
+                "maxGpuCountCommunityCloud": 12,
+                "maxGpuCountSecureCloud": 10,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA RTX A4000",
+                "displayName": "RTX A4000",
+                "memoryInGb": 16,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 4,
+                "maxGpuCountCommunityCloud": 4,
+                "maxGpuCountSecureCloud": 4,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA RTX A4500",
+                "displayName": "RTX A4500",
+                "memoryInGb": 20,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 11,
+                "maxGpuCountCommunityCloud": 11,
+                "maxGpuCountSecureCloud": 10,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA RTX A5000",
+                "displayName": "RTX A5000",
+                "memoryInGb": 24,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 10,
+                "maxGpuCountCommunityCloud": 8,
+                "maxGpuCountSecureCloud": 10,
+                "minPodGpuCount": 1,
+                "id": "NVIDIA RTX A6000",
+                "displayName": "RTX A6000",
+                "memoryInGb": 48,
+                "secureCloud": true,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 8,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "Tesla V100-FHHL-16GB",
+                "displayName": "V100 FHHL",
+                "memoryInGb": 16,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 8,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "Tesla V100-PCIE-16GB",
+                "displayName": "Tesla V100",
+                "memoryInGb": 16,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 8,
+                "maxGpuCountCommunityCloud": 8,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "Tesla V100-SXM2-16GB",
+                "displayName": "V100 SXM2",
+                "memoryInGb": 16,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Nvidia",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 4,
+                "maxGpuCountCommunityCloud": 4,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "Tesla V100-SXM2-32GB",
+                "displayName": "V100 SXM2 32GB",
+                "memoryInGb": 32,
+                "secureCloud": false,
+                "communityCloud": true,
+                "manufacturer": "Unknown",
+                "__typename": "GpuType"
+            },
+            {
+                "maxGpuCount": 1,
+                "maxGpuCountCommunityCloud": 1,
+                "maxGpuCountSecureCloud": 1,
+                "minPodGpuCount": 1,
+                "id": "unknown",
+                "displayName": "unknown",
+                "memoryInGb": 0,
+                "secureCloud": false,
+                "communityCloud": false,
+                "manufacturer": "unknown",
+                "__typename": "GpuType"
+            }
+        ]
+    }
+}

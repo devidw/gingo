@@ -1,53 +1,89 @@
 import type { IConnector } from "./i-connector.js"
-import type {
-    ClusterConfig,
-    ClusterState,
-    Config,
-    GlobalConfig,
-    Pod,
-    PodStatus,
-    State,
+import {
+    type ClusterState,
+    type CallbacksConfig,
+    type Pod,
+    type PodStatus,
+    type State,
+    clusterconfigSchema,
 } from "./types.js"
+import { z } from "zod"
 
 class OurTimeoutError extends Error {}
 
 export class Gingo {
-    protected globalConfig: GlobalConfig
-    state: State
+    callbacks: CallbacksConfig
+    state: State = { clusters: [] }
+
     protected ops: Ops
     connector: IConnector
 
+    jobs: Promise<void>[] = []
+
     constructor({
-        config,
+        callbacks,
         connector,
     }: {
-        config: Config
+        callbacks: CallbacksConfig
         connector: IConnector
     }) {
-        this.globalConfig = config.global
+        this.callbacks = callbacks
 
         this.connector = connector
-
-        this.state = {
-            clusters: config.clusters.map((clusterConfig) => {
-                return {
-                    checkStatus: "idle",
-                    config: clusterConfig,
-                    id: clusterConfig.id,
-                    pods: [],
-                    interval: null,
-                }
-            }),
-        }
 
         this.ops = new Ops(this)
     }
 
-    async start() {
+    async setClusterConfigs(rawClusterConfigs: unknown) {
+        const parsed = z.array(clusterconfigSchema).parse(rawClusterConfigs)
+
+        // make sure we don't add any more jobs before we mutate our state
+        this.clearIntervals()
+
+        // make sure all pending jobs are finished before we start mutating, so
+        // we don't mess things up
+        await Promise.allSettled(this.jobs)
+
+        // make absolutely sure we are idle
+        for (const cluster of this.state.clusters) {
+            if (cluster.checkStatus === "busy") {
+                throw new Error(
+                    "can not update config on non-idle state, this is an application issue, since the config updater should make sure we are idle before we update the cluster state with fresh config",
+                )
+            }
+        }
+
+        const newIds = parsed.map((a) => a.id)
+
+        // drop old ones
+        this.state.clusters = this.state.clusters.filter((a) =>
+            newIds.includes(a.config.id),
+        )
+
+        for (const clusterConfig of parsed) {
+            const clusterState = this.state.clusters.find(
+                (a) => a.config.id === clusterConfig.id,
+            )
+
+            if (clusterState) {
+                // update
+                clusterState.config = clusterConfig
+            } else {
+                // create
+                this.state.clusters.push({
+                    checkStatus: "idle",
+                    config: clusterConfig,
+                    pods: [],
+                    interval: null,
+                })
+            }
+        }
+
         await this.ops.loadInitialPods()
 
-        await Promise.all(
-            this.state.clusters.map((cluster) => this.checkCluster(cluster)),
+        // instant check
+        await Promise.allSettled(
+            this.state.clusters.map((a) => this.maybeCheckCluster(a)),
         )
 
         this.setupIntervals()
@@ -60,8 +96,8 @@ export class Gingo {
     setupIntervals() {
         for (const cluster of this.state.clusters) {
             cluster.interval = setInterval(
-                async () => {
-                    await this.checkCluster(cluster)
+                () => {
+                    this.jobs.push(this.maybeCheckCluster(cluster))
                 },
                 cluster.config.checkIntervalMin * 60 * 1000,
             )
@@ -75,13 +111,18 @@ export class Gingo {
         }
     }
 
-    async checkCluster(cluster: ClusterState) {
+    async maybeCheckCluster(cluster: ClusterState) {
+        if (!cluster.config.enabled) return
+
         if (cluster.checkStatus === "busy") return
 
         cluster.checkStatus = "busy"
 
-        await Promise.all(
-            cluster.pods.map((pod) => this.checkClusterPod(cluster, pod)),
+        await Promise.allSettled(
+            cluster.pods.map(async (pod) => {
+                await this.checkClusterPod(cluster, pod)
+                console.info(pod)
+            }),
         )
 
         await this.maybePerfomClusterOps(cluster)
@@ -92,35 +133,19 @@ export class Gingo {
     async checkClusterPod(cluster: ClusterState, pod: Pod) {
         const currentStatus = await this.connector.getStatus(pod)
 
-        switch (currentStatus) {
-            case "starting":
-            case "restarting":
-            case "unhealthy": {
-                // in a state where we can not perform a health check
-                pod.status = currentStatus
-                return
-            }
-            case "grey":
-            case "healthy": {
-                // in a state where we can perform a health check
-
-                if (pod.status === "starting") {
-                    if (cluster.config.afterPodStart) {
-                        await cluster.config.afterPodStart(pod.id)
-                    }
-                } else if (pod.status === "restarting") {
-                    if (cluster.config.afterPodRestart) {
-                        await cluster.config.afterPodRestart(pod.id)
-                    }
-                }
-
-                break
-            }
+        if (currentStatus === "unhealthy") {
+            pod.status = "unhealthy"
+            return
         }
 
+        let pass = false
+
         try {
-            const out = (await Promise.race([
-                cluster.config.checkPodHealth(pod.id),
+            pass = (await Promise.race([
+                this.callbacks.checkPodHealth({
+                    clusterConfig: cluster.config,
+                    podId: pod.id,
+                }),
                 new Promise((resolve, reject) =>
                     setTimeout(() => {
                         reject(new OurTimeoutError())
@@ -128,29 +153,55 @@ export class Gingo {
                 ),
             ])) as boolean
 
-            if (!out) {
+            if (!pass) {
                 throw new Error("unhealthy check")
             }
 
             pod.unhealthyCheckCount = 0
             pod.healthyCheckCount++
+            pod.lastHealthy = Date.now()
         } catch (e) {
+            pass = false
             pod.healthyCheckCount = 0
             pod.unhealthyCheckCount++
+        }
+
+        pod.lastCheck = new Date().toISOString()
+
+        if (!pass) {
+            if (pod.isStarting) {
+                if (
+                    Date.now() - pod.lastStart! <
+                    cluster.config.startTimeoutMin * 60 * 1000
+                ) {
+                    pod.status = "starting"
+                    return
+                }
+            }
+
+            if (pod.isRestarting) {
+                if (
+                    Date.now() - pod.lastRestart! <
+                    cluster.config.restartTimeoutMin * 60 * 1000
+                ) {
+                    pod.status = "restarting"
+                    return
+                }
+            }
         }
 
         if (pod.healthyCheckCount >= cluster.config.healthyCheckCount) {
             pod.status = "healthy"
             pod.restartCount = 0
-        } else if (
-            pod.unhealthyCheckCount >= cluster.config.unhealthyCheckCount
-        ) {
-            pod.status = "unhealthy"
-        } else {
-            pod.status = "grey"
+            return
         }
 
-        console.info(pod)
+        if (pod.unhealthyCheckCount >= cluster.config.unhealthyCheckCount) {
+            pod.status = "unhealthy"
+            return
+        }
+
+        pod.status = "grey"
     }
 
     async maybePerfomClusterOps(cluster: ClusterState) {
@@ -225,8 +276,11 @@ export class Gingo {
             .filter((a) => a.status === "healthy" || a.status === "grey")
             .map((a) => a.id)
 
-        if (cluster.config.onPodListUpdate) {
-            cluster.config.onPodListUpdate(podIds)
+        if (this.callbacks.onPodListUpdate) {
+            this.callbacks.onPodListUpdate({
+                clusterConfig: cluster.config,
+                podIds,
+            })
         }
     }
 }
@@ -325,7 +379,7 @@ class Ops {
 
         initialPods.map(({ name, pods }) => {
             this.mom.state.clusters = this.mom.state.clusters.map((a) => {
-                if (a.config.id !== name) {
+                if (a.config.id !== name || a.pods.length > 0) {
                     return a
                 }
 
@@ -340,15 +394,22 @@ class Ops {
         try {
             const pod = await this.mom.connector.add(cluster.config)
 
+            if (this.mom.callbacks.afterPodStart) {
+                this.mom.callbacks.afterPodStart({
+                    clusterConfig: cluster.config,
+                    podId: pod.id,
+                })
+            }
+
+            pod.start()
+
+            cluster.pods.push(pod)
+
             console.info({
                 cluster: cluster.config.id,
                 op: "add-pod",
                 podId: pod.id,
             })
-
-            pod.status = "starting"
-
-            cluster.pods.push(pod)
         } catch (error) {
             console.warn({
                 cluster: cluster.config.id,
@@ -382,10 +443,14 @@ class Ops {
         try {
             await this.mom.connector.restart(pod)
 
-            pod.restartCount++
-            pod.healthyCheckCount = 0
-            pod.unhealthyCheckCount = 0
-            pod.status = "restarting"
+            pod.restart()
+
+            if (this.mom.callbacks.afterPodRestart) {
+                this.mom.callbacks.afterPodRestart({
+                    clusterConfig: cluster.config,
+                    podId: pod.id,
+                })
+            }
 
             console.info({
                 cluster: cluster.config.id,

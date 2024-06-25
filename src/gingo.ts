@@ -159,7 +159,7 @@ export class Gingo {
 
             pod.unhealthyCheckCount = 0
             pod.healthyCheckCount++
-            pod.lastHealthy = Date.now()
+            pod.lastHealthy = new Date().toISOString()
         } catch (e) {
             pass = false
             pod.healthyCheckCount = 0
@@ -171,7 +171,7 @@ export class Gingo {
         if (!pass) {
             if (pod.isStarting) {
                 if (
-                    Date.now() - pod.lastStart! <
+                    Date.now() - new Date(pod.lastStart!).getTime() <
                     cluster.config.startTimeoutMin * 60 * 1000
                 ) {
                     pod.status = "starting"
@@ -181,7 +181,7 @@ export class Gingo {
 
             if (pod.isRestarting) {
                 if (
-                    Date.now() - pod.lastRestart! <
+                    Date.now() - new Date(pod.lastRestart!).getTime() <
                     cluster.config.restartTimeoutMin * 60 * 1000
                 ) {
                     pod.status = "restarting"

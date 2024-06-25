@@ -65,9 +65,9 @@ export class Pod {
     restartCount = 0
     extra: Record<string, unknown> = {}
 
-    lastStart: number | null = null
-    lastRestart: number | null = null
-    lastHealthy: number | null = null
+    lastStart: string | null = null
+    lastRestart: string | null = null
+    lastHealthy: string | null = null
     lastCheck: string | null = null
 
     constructor(id: string) {
@@ -76,7 +76,7 @@ export class Pod {
 
     start() {
         this.status = "starting"
-        this.lastStart = Date.now()
+        this.lastStart = new Date().toISOString()
     }
 
     restart() {
@@ -84,7 +84,7 @@ export class Pod {
         this.healthyCheckCount = 0
         this.unhealthyCheckCount = 0
         this.status = "restarting"
-        this.lastRestart = Date.now()
+        this.lastRestart = new Date().toISOString()
         this.lastHealthy = null
     }
 
@@ -100,7 +100,9 @@ export class Pod {
         return (
             this.lastRestart !== null &&
             this.restartCount > 0 &&
-            (this.lastHealthy === null || this.lastHealthy < this.lastRestart)
+            (this.lastHealthy === null ||
+                new Date(this.lastHealthy).getTime() <
+                    new Date(this.lastRestart).getTime())
         )
     }
 }

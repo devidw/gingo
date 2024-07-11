@@ -131,9 +131,15 @@ export class Gingo {
     }
 
     async checkClusterPod(cluster: ClusterState, pod: Pod) {
-        const currentStatus = await this.connector.getStatus(pod)
+        try {
+            const currentStatus = await this.connector.getStatus(pod)
 
-        if (currentStatus === "unhealthy") {
+            if (currentStatus === "unhealthy") {
+                pod.status = "unhealthy"
+                return
+            }
+        } catch (e) {
+            console.warn(e)
             pod.status = "unhealthy"
             return
         }
@@ -154,13 +160,30 @@ export class Gingo {
             ])) as boolean
 
             if (!pass) {
-                throw new Error("unhealthy check")
+                throw new Error(
+                    "health check performed, but returned unhealthy status",
+                )
             }
 
             pod.unhealthyCheckCount = 0
             pod.healthyCheckCount++
             pod.lastHealthy = new Date().toISOString()
-        } catch (e) {
+        } catch (error) {
+            console.warn(
+                JSON.stringify(
+                    {
+                        clusterId: cluster.config.id,
+                        podId: pod.id,
+                        error:
+                            error instanceof Error
+                                ? `${error.name}: ${error.message}`
+                                : error,
+                    },
+                    null,
+                    4,
+                ),
+            )
+
             pass = false
             pod.healthyCheckCount = 0
             pod.unhealthyCheckCount++

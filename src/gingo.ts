@@ -139,7 +139,7 @@ export class Gingo {
                 return
             }
         } catch (e) {
-            console.warn(e)
+            console.error(e)
             pod.status = "unhealthy"
             return
         }
@@ -169,20 +169,10 @@ export class Gingo {
             pod.healthyCheckCount++
             pod.lastHealthy = new Date().toISOString()
         } catch (error) {
-            console.warn(
-                JSON.stringify(
-                    {
-                        clusterId: cluster.config.id,
-                        podId: pod.id,
-                        error:
-                            error instanceof Error
-                                ? `${error.name}: ${error.message}`
-                                : error,
-                    },
-                    null,
-                    4,
-                ),
-            )
+            console.error(error, {
+                clusterId: cluster.config.id,
+                podId: pod.id,
+            })
 
             pass = false
             pod.healthyCheckCount = 0
@@ -434,7 +424,7 @@ class Ops {
                 podId: pod.id,
             })
         } catch (error) {
-            console.warn({
+            console.error({
                 cluster: cluster.config.id,
                 op: "add-pod",
                 error,
@@ -454,7 +444,7 @@ class Ops {
                 podId: pod.id,
             })
         } catch (error) {
-            console.warn({
+            console.error({
                 cluster: cluster.config.id,
                 op: "remove-pod",
                 error,
@@ -481,7 +471,7 @@ class Ops {
                 podId: pod.id,
             })
         } catch (error) {
-            console.warn({
+            console.error({
                 cluster: cluster.config.id,
                 op: "restart-pod",
                 error,
